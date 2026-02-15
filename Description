@@ -1,0 +1,50 @@
+📱 Flutter Quote Generator App
+
+A simple and attractive Quote Generator mobile application built using Flutter and developed in Android Studio.
+
+This beginner-friendly app displays random motivational quotes with a beautiful gradient background and card-based UI. Users can generate new quotes instantly by tapping a button.
+
+✨ Features
+
+🎯 50 motivational quotes
+
+🎨 Gradient background design
+
+📄 Card-style quote display
+
+🔘 Rounded “Generate Quote” button
+
+⚡ Fast & lightweight
+
+📱 Android compatible
+
+🛠 Built With
+
+Flutter (Dart)
+
+Android Studio
+
+🚀 How to Run
+
+Clone this repository
+
+Open project in Android Studio
+
+Run:
+
+flutter pub get
+flutter run
+
+📚 Purpose
+
+This project is created for learning Flutter basics such as:
+
+Stateful widgets
+
+UI design
+
+Random data generation
+
+Button interactions
+
+Perfect for students & beginners.
