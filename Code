@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: QuoteApp(),
     );
@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class QuoteApp extends StatefulWidget {
+  const QuoteApp({super.key});
+
   @override
   State<QuoteApp> createState() => _QuoteAppState();
 }
@@ -34,46 +36,6 @@ class _QuoteAppState extends State<QuoteApp> {
     "You are stronger than you think.",
     "Push yourself.",
     "Focus on progress.",
-    "Small steps matter.",
-    "Be fearless.",
-    "Create your future.",
-    "Stay motivated.",
-    "Think positive.",
-    "Learn every day.",
-    "Trust the process.",
-    "Do your best.",
-    "Be kind.",
-    "Stay focused.",
-    "Never stop learning.",
-    "Chase your dreams.",
-    "You can do it.",
-    "Stay strong.",
-    "Rise and shine.",
-    "Keep moving forward.",
-    "Be confident.",
-    "Stay inspired.",
-    "Believe & achieve.",
-    "Turn dreams into plans.",
-    "Keep going.",
-    "Smile more.",
-    "Hard work pays off.",
-    "Stay curious.",
-    "Be proud of yourself.",
-    "Enjoy the journey.",
-    "Stay brave.",
-    "No pain, no gain.",
-    "Make it happen.",
-    "Stay happy.",
-    "Think big.",
-    "Be unstoppable.",
-    "Stay calm.",
-    "Grow every day.",
-    "Win your mind.",
-    "Never quit.",
-    "Positive vibes.",
-    "Believe in magic.",
-    "Success is coming.",
-    "You matter."
   ];
 
   String currentQuote = "Tap the button for a quote!";
@@ -85,9 +47,44 @@ class _QuoteAppState extends State<QuoteApp> {
     });
   }
 
+  void addQuote(String newQuote) {
+    setState(() {
+      quotes.add(newQuote);
+    });
+  }
+
+  void removeQuote(int index) {
+    setState(() {
+      quotes.removeAt(index);
+    });
+  }
+
+  void openQuoteListScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuoteListScreen(
+          quotes: quotes,
+          onDelete: removeQuote,
+          onAdd: addQuote,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Motivational Quotes"),
+        backgroundColor: Colors.deepPurple,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: openQuoteListScreen,
+          )
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -113,16 +110,15 @@ class _QuoteAppState extends State<QuoteApp> {
                       currentQuote,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 40),
-
                 ElevatedButton(
+                  onPressed: generateQuote,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 15),
@@ -130,7 +126,6 @@ class _QuoteAppState extends State<QuoteApp> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  onPressed: generateQuote,
                   child: const Text(
                     "Generate Quote",
                     style: TextStyle(fontSize: 18),
@@ -140,6 +135,90 @@ class _QuoteAppState extends State<QuoteApp> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class QuoteListScreen extends StatefulWidget {
+  final List<String> quotes;
+  final Function(int) onDelete;
+  final Function(String) onAdd;
+
+  const QuoteListScreen({
+    super.key,
+    required this.quotes,
+    required this.onDelete,
+    required this.onAdd,
+  });
+
+  @override
+  State<QuoteListScreen> createState() => _QuoteListScreenState();
+}
+
+class _QuoteListScreenState extends State<QuoteListScreen> {
+  final TextEditingController controller = TextEditingController();
+
+  void addNewQuote() {
+    if (controller.text.isNotEmpty) {
+      widget.onAdd(controller.text);
+      controller.clear();
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("All Quotes"),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      hintText: "Enter new quote",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: addNewQuote,
+                  child: const Text("Add"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.quotes.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: ListTile(
+                    title: Text(widget.quotes[index]),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        widget.onDelete(index);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
